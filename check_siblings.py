@@ -1,5 +1,5 @@
-from ga_creature import creature
-from ga_creature import genome
+from creature import creature
+from creature import genome
 
 spec = genome.GeneSpec.get_gene_spec()
 gene = genome.Genome.init_random_gene(len(spec))

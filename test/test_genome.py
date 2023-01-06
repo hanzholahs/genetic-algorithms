@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from ga_creature import genome
+from creature import genome
 
 class GenomeTest(unittest.TestCase):
     def testGenomeClass(self):

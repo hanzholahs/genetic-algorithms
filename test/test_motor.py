@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from ga_creature import genome, creature, motor
+from creature import genome, creature, motor
 
 class MotorClassTest(unittest.TestCase):
     def testMotorClass(self):

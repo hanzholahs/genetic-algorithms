@@ -2,7 +2,7 @@ import time
 import pybullet as p
 import random
 import pybullet_data
-from ga_creature import creature
+from creature import creature
 
 
 c = creature.Creature(gene_count=4)

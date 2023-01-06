@@ -3,7 +3,7 @@ import copy
 from dataclasses import dataclass
 from enum import Enum
 from xml.dom.minidom import getDOMImplementation
-from ga_creature import genome, motor
+from creature import genome, motor
 
 @dataclass
 class CreatureLink:

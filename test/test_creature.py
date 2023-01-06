@@ -2,7 +2,7 @@ import unittest
 import pybullet as p
 import numpy as np
 from xml.dom.minidom import getDOMImplementation, Element
-from ga_creature import creature, genome
+from creature import creature, genome
 
 class CreatureLinkTest(unittest.TestCase):
     def testCreatureLinkClass(self):
