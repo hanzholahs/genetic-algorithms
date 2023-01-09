@@ -1,8 +1,4 @@
 import unittest
-import os
-import time
-import numpy as np
-import pybullet as p
 from simulation import simulation, population
 from creature import creature
 
@@ -46,14 +42,14 @@ class SimulationClassTest(unittest.TestCase):
         for dist in dists:
             self.assertGreater(dist, 0)
 
-    # def testMultiProcessPopRun(self):
-    #     self.assertIsNotNone(simulation.MultiProcessSim)
-    #     pop_size = 5
-    #     pop = population.Population(pop_size, 5)
-    #     multisim = simulation.MultiProcessSim(5)
-    #     multisim.eval_population(pop)
+    def testMultiProcessPopRun(self):
+        self.assertIsNotNone(simulation.MultiProcessSim)
+        pop_size = 5
+        pop = population.Population(pop_size, 5)
+        multisim = simulation.MultiProcessSim(5)
+        multisim.eval_population(pop)
         
-    #     dists = [cr.get_distance() for cr in pop.creatures]
-    #     self.assertEqual(len(dists), pop_size)
-    #     for dist in dists:
-    #         self.assertGreater(dist, 0)
+        dists = [cr.get_distance() for cr in pop.creatures]
+        self.assertEqual(len(dists), pop_size)
+        for dist in dists:
+            self.assertGreater(dist, 0)

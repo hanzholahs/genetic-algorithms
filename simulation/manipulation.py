@@ -22,7 +22,10 @@ class Selection:
 
     @staticmethod
     def select_parent_indices(fits):
-        probs = np.array(fits) / np.sum(fits)
+        fits  = np.nan_to_num(np.array(fits), nan = 0.0)
+        probs = fits / np.sum(fits)
+        if np.mean(probs == 0.0) == 1:
+            probs = np.ones(len(fits)) / len(fits)
         return np.random.choice(range(len(fits)), 2, False, probs)
 
     @staticmethod
@@ -45,7 +48,7 @@ class Crossover:
 
 class Mutation:
     @staticmethod
-    def point_mutate(dna, mutation_rate = .10, mutation_amount = .25):
+    def point_mutate(dna, mutation_rate = .05, mutation_amount = .05):
         cp_dna = copy.copy(dna).flatten()
         mutated = np.random.choice((True, False), size = len(cp_dna), replace = True, p = (mutation_rate, 1-mutation_rate))
         cp_dna[mutated] = np.minimum(
@@ -58,13 +61,15 @@ class Mutation:
         return np.reshape(cp_dna, dna.shape)
 
     @staticmethod
-    def shrink_mutate(dna, mutation_rate = .10):
+    def shrink_mutate(dna, mutation_rate = .05):
         cp_dna = copy.copy(dna)
+        if len(cp_dna) <= 2:
+            return cp_dna
         mutated = np.random.choice((True, False), size = len(cp_dna), replace = True, p = (mutation_rate, 1-mutation_rate))
         return np.delete(cp_dna, mutated, axis = 0)
 
     @staticmethod
-    def grow_mutate(dna, mutation_rate = .10):
+    def grow_mutate(dna, mutation_rate = .05):
         cp_dna = copy.copy(dna)
         mutated = np.random.choice((True, False), size = len(cp_dna), replace = True, p = (mutation_rate, 1-mutation_rate))
         return np.append(cp_dna, cp_dna[mutated], axis = 0)

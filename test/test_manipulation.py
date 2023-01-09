@@ -8,16 +8,16 @@ class SelectionClassTest(unittest.TestCase):
     def testSelectionClass(self):
         self.assertIsNotNone(manipulation.Selection)
     
-    # def testFitnessFunction(self):
-    #     pop_size = 5
-    #     pop = population.Population(pop_size, 5)
-    #     multisim = simulation.MultiProcessSim(5)
-    #     multisim.eval_population(pop)
+    def testFitnessFunction(self):
+        pop_size = 5
+        pop = population.Population(pop_size, 5)
+        multisim = simulation.MultiProcessSim(5)
+        multisim.eval_population(pop)
         
-    #     fits = manipulation.Selection.eval_fitness(pop.creatures)
-    #     self.assertEqual(len(fits), pop_size)
-    #     for fit in fits:
-    #         self.assertGreater(fit, 0)
+        fits = manipulation.Selection.eval_fitness(pop.creatures)
+        self.assertEqual(len(fits), pop_size)
+        for fit in fits:
+            self.assertGreaterEqual(fit, 0)
     
     def testFitnessEvaluationScenarioDiffLength(self):
         cr_1 = creature.Creature(10)
@@ -77,20 +77,20 @@ class SelectionClassTest(unittest.TestCase):
             self.assertIn(p2, parents)
             self.assertNotEqual(p1, p2)
 
-    # def testParentSelectionBasedOnSimulation(self):
-    #     pop_size = 5
-    #     pop = population.Population(pop_size, 5)
-    #     multisim = simulation.MultiProcessSim(5)
-    #     multisim.eval_population(pop)
+    def testParentSelectionBasedOnSimulation(self):
+        pop_size = 5
+        pop = population.Population(pop_size, 5)
+        multisim = simulation.MultiProcessSim(5)
+        multisim.eval_population(pop)
         
-    #     fits = manipulation.Selection.eval_fitness(pop.creatures)
-    #     p1, p2 = manipulation.Selection.select_parents(pop.creatures, fits)
-    #     self.assertIsInstance(p1, creature.Creature)
-    #     self.assertIsInstance(p2, creature.Creature)
-    #     self.assertIn(p1, pop.creatures)
-    #     self.assertIn(p2, pop.creatures)
-    #     self.assertEqual(len(p1.get_flat_links()), 5)
-    #     self.assertEqual(len(p2.get_flat_links()), 5)
+        fits = manipulation.Selection.eval_fitness(pop.creatures)
+        p1, p2 = manipulation.Selection.select_parents(pop.creatures, fits)
+        self.assertIsInstance(p1, creature.Creature)
+        self.assertIsInstance(p2, creature.Creature)
+        self.assertIn(p1, pop.creatures)
+        self.assertIn(p2, pop.creatures)
+        self.assertEqual(len(p1.get_flat_links()), 5)
+        self.assertEqual(len(p2.get_flat_links()), 5)
 
 class CrossoverClassTest(unittest.TestCase):
     def testCrossoverClass(self):

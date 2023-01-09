@@ -39,7 +39,6 @@ class Creature:
     def get_expanded_links(self):
         if self.__expanded_links == None:
             self.__expanded_links = Creature.expand_links(self.get_flat_links())
-        self.__expanded_links[0].recur = 1
         return self.__expanded_links
 
     def get_robot_xml(self):
@@ -74,15 +73,17 @@ class Creature:
         return self.last_position
 
     def get_distance(self):
-        return np.linalg.norm(np.asarray(self.last_position) - np.asarray(self.start_position))
+        dist = np.linalg.norm(np.asarray(self.last_position) - np.asarray(self.start_position))
+        return np.nan_to_num(dist)
 
     def update_dna(self, new_dna):
         assert len(self.spec) == new_dna.shape[-1]
         self.dna = new_dna
         self.start_position = (0, 0, 0)
         self.last_position = (0, 0, 0)
-        self.get_flat_links()
-        self.get_expanded_links()
+        self.motors = None
+        self.__flat_links = None
+        self.__expanded_links = None
         self.get_motors()
 
     @staticmethod
@@ -98,7 +99,8 @@ class Creature:
         return flat_links
     
     @staticmethod
-    def expand_links(flat_links):        
+    def expand_links(flat_links):       
+        flat_links[0].recur == 1 
         assert flat_links[0].recur == 1
         exp_links = Creature.__expand_links_recursive(flat_links[0], flat_links[1:])
         Creature.__counter = 0

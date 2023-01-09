@@ -36,18 +36,16 @@ class Population:
         fits = manipulation.Selection.eval_fitness(self.creatures)
         return manipulation.Selection.select_parents(self.creatures, fits)
 
-    def reset_new_generation(self, num_elite_creatures = 3):
+    def reset_population_new_gen(self, num_elite_creatures = 0):
         if num_elite_creatures < self.population_size :
             num_elite_creatures = 0
 
         fits = manipulation.Selection.eval_fitness(self.creatures)
-        fittest_indices = fits.argsort()[-1:-4:-1]
+        fittest_indices = np.array(fits).argsort()[-1:-(num_elite_creatures+1):-1]
 
         new_creatures = []
-
         for index in fittest_indices:
             new_creatures.append(self.creatures[index])
-
         for _ in range(self.population_size - num_elite_creatures):
             p1, p2 = self.select_parents()
             child_dna = manipulation.NewGeneration.generate_child_dna(p1.dna, p2.dna)
