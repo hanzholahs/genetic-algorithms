@@ -123,7 +123,7 @@ class MutationClassTest(unittest.TestCase):
         dna = genome.Genome.init_random_genome(10, 25)
         rate = 0.25
         for _ in range(15):
-            mutated_dna = manipulation.Mutation.point_mutate(dna, rate)
+            mutated_dna = manipulation.Mutation.point_mutate(dna, mutation_rate = rate)
             self.assertEqual(np.mean(mutated_dna <= 1), 1)
             self.assertEqual(np.mean(mutated_dna >= 0), 1)
             self.assertEqual(dna.shape, mutated_dna.shape)
@@ -142,37 +142,37 @@ class MutationClassTest(unittest.TestCase):
         dna = genome.Genome.init_random_genome(25, 5)
         rate = 0.25
         for _ in range(15):
-            mutated_dna = manipulation.Mutation.shrink_mutate(dna, rate)
+            mutated_dna = manipulation.Mutation.shrink_mutate(dna, mutation_rate = rate)
             self.assertLessEqual(len(mutated_dna), len(dna))
             self.assertEqual(mutated_dna.shape[1], dna.shape[1])
             self.assertTrue(len(mutated_dna) / len(dna) < (1 - rate + 3 * rate))
             self.assertTrue(len(mutated_dna) / len(dna) > (1 - rate - 3 * rate))
 
-        mutated_dna = manipulation.Mutation.shrink_mutate(dna, 1)
-        self.assertTrue(len(mutated_dna) == 0)
+        mutated_dna = manipulation.Mutation.shrink_mutate(dna, mutation_rate = 1)
+        self.assertTrue(len(mutated_dna) == 2)
         
-        mutated_dna = manipulation.Mutation.shrink_mutate(dna, 0)
+        mutated_dna = manipulation.Mutation.shrink_mutate(dna, mutation_rate = 0)
         self.assertTrue(len(mutated_dna) == len(dna))
-        self.assertTrue(np.mean(dna == mutated_dna) == 1)\
+        self.assertTrue(np.mean(dna == mutated_dna) == 1)
                     
     def testGrowMutation(self):
         self.assertIsNotNone(manipulation.Mutation.grow_mutate)
 
-        dna = genome.Genome.init_random_genome(25, 5)
+        dna = genome.Genome.init_random_genome(5, 5)
         rate = 0.25
         for _ in range(15):
-            mutated_dna = manipulation.Mutation.grow_mutate(dna, rate)
+            mutated_dna = manipulation.Mutation.grow_mutate(dna, mutation_rate = rate)
             self.assertGreaterEqual(len(mutated_dna), len(dna))
             self.assertEqual(mutated_dna.shape[1], dna.shape[1])
             self.assertTrue(len(mutated_dna) / len(dna) < (1 + rate + 3 * rate))
             self.assertTrue(len(mutated_dna) / len(dna) > (1 + rate - 3 * rate))
 
-        mutated_dna = manipulation.Mutation.grow_mutate(dna, 1)
+        mutated_dna = manipulation.Mutation.grow_mutate(dna, mutation_rate = 1)
         self.assertTrue(len(mutated_dna) == 2 * len(dna))
         self.assertEqual(mutated_dna.shape[1], dna.shape[1])
         self.assertEqual(np.mean(mutated_dna[0] == mutated_dna[len(dna)]), 1)
         
-        mutated_dna = manipulation.Mutation.grow_mutate(dna, 0)
+        mutated_dna = manipulation.Mutation.grow_mutate(dna, mutation_rate = 0)
         self.assertTrue(len(mutated_dna) == len(dna))
         self.assertEqual(mutated_dna.shape[1], dna.shape[1])
         self.assertTrue(np.mean(dna == mutated_dna) == 1)

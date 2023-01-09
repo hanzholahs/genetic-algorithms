@@ -36,22 +36,53 @@ class Population:
         fits = manipulation.Selection.eval_fitness(self.creatures)
         return manipulation.Selection.select_parents(self.creatures, fits)
 
-    def reset_population_new_gen(self, num_elite_creatures = 0):
-        if num_elite_creatures < self.population_size :
-            num_elite_creatures = 0
-
+    def reset_population_new_gen(
+            self, 
+            num_elites = 0,
+            num_new_random = 0,
+            min_length_limit = 2, 
+            max_length_limit = 15, 
+            max_growth_rate = 1.2,
+            point_mutation_rate = .05,
+            point_mutation_amount = .05,
+            shrink_mutation_rate = .05,
+            grow_mutation_rate = .05
+        ):
+        if num_elites < self.population_size :
+            num_elites = 0
+        if num_new_random > self.population_size:
+            num_new_random = self.population_size - 1
+        if num_elites + num_new_random > self.population_size:
+            num_elites = int(self.population_size / 2)
+            num_new_random = np.maximum(0, self.population_size - num_elites)
+        
         fits = manipulation.Selection.eval_fitness(self.creatures)
-        fittest_indices = np.array(fits).argsort()[-1:-(num_elite_creatures+1):-1]
+        fittest_indices = np.array(fits).argsort()[-1:-(num_elites+1):-1]
 
         new_creatures = []
         for index in fittest_indices:
-            new_creatures.append(self.creatures[index])
-        for _ in range(self.population_size - num_elite_creatures):
+            fittest_cr = self.creatures[index]
+            new_creatures.append(fittest_cr)
+        for _ in range(self.population_size - num_elites - num_new_random):
             p1, p2 = self.select_parents()
-            child_dna = manipulation.NewGeneration.generate_child_dna(p1.dna, p2.dna)
+            child_dna = manipulation.NewGeneration.generate_child_dna(
+                p1.dna, 
+                p2.dna,
+                min_length_limit,
+                max_length_limit,
+                max_growth_rate,
+                point_mutation_rate,
+                point_mutation_amount,
+                shrink_mutation_rate,
+                grow_mutation_rate
+            )
             child_cr = creature.Creature(1)
             child_cr.update_dna(child_dna)
             new_creatures.append(child_cr)
+        for _ in range(num_new_random):
+            random_cr = creature.Creature(self.gene_count)
+            new_creatures.append(random_cr)
+        assert self.population_size == len(new_creatures)
 
         self.reset_population(new_creatures)   
 
@@ -65,7 +96,7 @@ class Population:
     @staticmethod
     def to_csv(creatures, base_folder = ".", identifier = "dna"):
         if not os.path.exists(base_folder):
-            os.mkdir(base_folder)
+            os.makedirs(base_folder, exist_ok=True)
         for i, cr in enumerate(creatures):
             np.savetxt(f"{base_folder}/{identifier}_cr_{i}.csv", cr.dna, delimiter = ",")
 

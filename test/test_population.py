@@ -118,4 +118,4 @@ class NewGenerationTest(unittest.TestCase):
             fits.sort(reverse=True)
             for fit in fits:
                 self.assertEqual(type(float(fit)), float)
-            pop.reset_population_new_gen(2)
+            pop.reset_population_new_gen(num_elites = 2)
