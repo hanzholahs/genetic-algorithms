@@ -21,9 +21,11 @@ class Creature:
     __joint_axes  = ("1 0 0", "0 1 0", "0 0 1")
     __counter = 0
     
-    def __init__(self, gene_count, spec = genome.GeneSpec.get_gene_spec()):
-        self.spec = spec
-        self.dna = genome.Genome.init_random_genome(gene_count, len(self.spec))
+    def __init__(self, gene_count, gene_spec = genome.GeneSpec.get_gene_spec()):
+        self.dna = genome.Genome.init_random_genome(gene_count, len(gene_spec))
+        self.spec = gene_spec
+        self.start_position = (0, 0, 0)
+        self.last_position = (0, 0, 0)
         self.motors = None
         self.__flat_links = None
         self.__expanded_links = None
@@ -37,25 +39,51 @@ class Creature:
     def get_expanded_links(self):
         if self.__expanded_links == None:
             self.__expanded_links = Creature.expand_links(self.get_flat_links())
+        self.__expanded_links[0].recur = 1
         return self.__expanded_links
 
     def get_robot_xml(self):
         return Creature.creature_to_xml(self.get_expanded_links())
+
+    def write_robot_xml(self, path):
+        if self.__expanded_links == None:
+            self.__expanded_links = Creature.expand_links(self.get_flat_links())
+        with open(path, "w") as f:
+            xml_str = self.get_robot_xml().toprettyxml()
+            f.write(xml_str)
+        return None
     
     def get_motors(self):
         if self.motors == None:
             self.get_expanded_links()
             motors = []
             for i, link in enumerate(self.__expanded_links):
-                if i == 0:
-                    continue
-                motors.append(motor.Motor(
-                    link.gene_dict["control_waveform"],
-                    link.gene_dict["control_amp"],
-                    link.gene_dict["control_freq"]
-                ))
+                if i == 0: continue
+                motors.append(motor.Motor(  link.gene_dict["control_waveform"],
+                                            link.gene_dict["control_amp"],
+                                            link.gene_dict["control_freq"]))
             self.motors = motors
         return self.motors
+
+    def reset_start_position(self, start_position):
+        self.start_position = start_position
+        return self.start_position
+
+    def update_position(self, new_position):
+        self.last_position = new_position
+        return self.last_position
+
+    def get_distance(self):
+        return np.linalg.norm(np.asarray(self.last_position) - np.asarray(self.start_position))
+
+    def update_dna(self, new_dna):
+        assert len(self.spec) == new_dna.shape[-1]
+        self.dna = new_dna
+        self.start_position = (0, 0, 0)
+        self.last_position = (0, 0, 0)
+        self.get_flat_links()
+        self.get_expanded_links()
+        self.get_motors()
 
     @staticmethod
     def genome_to_links(genome_dicts):

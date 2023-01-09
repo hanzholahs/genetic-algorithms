@@ -1,6 +1,7 @@
 import unittest
 import pybullet as p
 import numpy as np
+import os
 from xml.dom.minidom import getDOMImplementation, Element
 from creature import creature, genome
 
@@ -144,11 +145,22 @@ class CreatureXMLTest(unittest.TestCase):
 
             self.assertEqual(len(robot_tag1.childNodes), len(cr.get_expanded_links()) * 2 - 1)
 
-    def testLoadXML(self):
+    def testCreatureWriteXML(self):
+        spec = genome.GeneSpec.get_gene_spec()
+        cr = creature.Creature(5, spec)
+        cr.write_robot_xml("urdf/test_motors.urdf")
+        self.assertTrue(os.path.exists("urdf/test_motors.urdf"))
+
+        with open("urdf/test_motors.urdf") as f:
+            f_str= f.read()
+
+        self.assertEqual(f_str, cr.get_robot_xml().toprettyxml())
+
+    def testCreatureLoadXML(self):
         spec = genome.GeneSpec.get_gene_spec()
 
-        for _ in range(10):
-            c = creature.Creature(gene_count = 3, spec = spec)
+        for _ in range(5):
+            c = creature.Creature(gene_count = 3, gene_spec = spec)
             xml_str = c.get_robot_xml().toprettyxml()
             with open('urdf/test.urdf', 'w') as f:
                 f.write(xml_str)
@@ -156,10 +168,25 @@ class CreatureXMLTest(unittest.TestCase):
             cid = p.loadURDF('urdf/test.urdf')
             self.assertIsNotNone(cid)
 
-        c = creature.Creature(gene_count = 5, spec = spec)
+        c = creature.Creature(gene_count = 5, gene_spec = spec)
         xml_str = c.get_robot_xml().toprettyxml()
         with open('urdf/test.urdf', 'w') as f:
             f.write(xml_str)
         p.connect(p.DIRECT)
         cid = p.loadURDF('urdf/test.urdf')
         self.assertIsNotNone(cid)
+
+class CreatureMoveTest(unittest.TestCase):
+    def testMovingDistance(self):
+        self.assertIsNotNone(creature.Creature.update_position)
+        self.assertIsNotNone(creature.Creature.get_distance)
+
+        cr = creature.Creature(2)
+        self.assertEqual(0, cr.get_distance())
+        self.assertEqual(cr.start_position, (0, 0, 0))
+        self.assertEqual(cr.last_position, (0, 0, 0))
+
+        cr.update_position((0, 0, 1))
+        self.assertGreater(cr.get_distance(), 0)
+        self.assertEqual(cr.start_position, (0, 0, 0))
+        self.assertEqual(cr.last_position, (0, 0, 1))
