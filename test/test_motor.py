@@ -49,9 +49,9 @@ class MotorCreatureTest(unittest.TestCase):
 
         spec = genome.GeneSpec.get_gene_spec()
         cr = creature.Creature(5, spec)
-        cr.write_robot_xml("urdf/test_motors.urdf")
+        cr.write_robot_xml(".temp/test_motors.urdf")
         motors = cr.get_motors()
-        robot  = p.loadURDF('urdf/test_motors.urdf')
+        robot  = p.loadURDF('.temp/test_motors.urdf')
         self.assertEqual(len(motors), p.getNumJoints(robot))
 
         start, _ = p.getBasePositionAndOrientation(robot)

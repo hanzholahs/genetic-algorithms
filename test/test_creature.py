@@ -148,10 +148,10 @@ class CreatureXMLTest(unittest.TestCase):
     def testCreatureWriteXML(self):
         spec = genome.GeneSpec.get_gene_spec()
         cr = creature.Creature(5, spec)
-        cr.write_robot_xml("urdf/test_motors.urdf")
-        self.assertTrue(os.path.exists("urdf/test_motors.urdf"))
+        cr.write_robot_xml(".temp/test_motors.urdf")
+        self.assertTrue(os.path.exists(".temp/test_motors.urdf"))
 
-        with open("urdf/test_motors.urdf") as f:
+        with open(".temp/test_motors.urdf") as f:
             f_str= f.read()
 
         self.assertEqual(f_str, cr.get_robot_xml().toprettyxml())
@@ -162,18 +162,18 @@ class CreatureXMLTest(unittest.TestCase):
         for _ in range(5):
             c = creature.Creature(gene_count = 3, gene_spec = spec)
             xml_str = c.get_robot_xml().toprettyxml()
-            with open('urdf/test.urdf', 'w') as f:
+            with open('.temp/test.urdf', 'w') as f:
                 f.write(xml_str)
             p.connect(p.DIRECT)
-            cid = p.loadURDF('urdf/test.urdf')
+            cid = p.loadURDF('.temp/test.urdf')
             self.assertIsNotNone(cid)
 
         c = creature.Creature(gene_count = 5, gene_spec = spec)
         xml_str = c.get_robot_xml().toprettyxml()
-        with open('urdf/test.urdf', 'w') as f:
+        with open('.temp/test.urdf', 'w') as f:
             f.write(xml_str)
         p.connect(p.DIRECT)
-        cid = p.loadURDF('urdf/test.urdf')
+        cid = p.loadURDF('.temp/test.urdf')
         self.assertIsNotNone(cid)
 
 class CreatureMoveTest(unittest.TestCase):

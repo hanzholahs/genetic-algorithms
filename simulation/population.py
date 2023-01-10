@@ -20,7 +20,8 @@ class Population:
         if creatures == None:
             self.creatures = [creature.Creature(self.gene_count) for _ in range(self.population_size)]
         else:
-            assert type(creatures) == list and type(creatures[0]) == creature.Creature
+            assert type(creatures) == list and len(creatures) > 0
+            assert type(creatures[0]) == creature.Creature
             for old_creature in self.creatures:
                 del old_creature
             self.creatures = creatures
@@ -86,22 +87,22 @@ class Population:
 
         self.reset_population(new_creatures)   
 
-    def pop_to_csv(self, base_folder = ".", identifier = "dna"):
-        Population.to_csv(self.creatures, base_folder = base_folder, identifier = identifier)
+    def pop_to_csvs(self, base_folder = ".", identifier = "dna"):
+        Population.__to_csvs(self.creatures, base_folder = base_folder, identifier = identifier)
 
-    def pop_from_csv(self, base_folder = ".", identifier = "dna"):
-        new_creatures = Population.from_csv(base_folder = base_folder, identifier = identifier)
+    def pop_from_csvs(self, base_folder = ".", identifier = "dna"):
+        new_creatures = Population.__from_csvs(base_folder = base_folder, identifier = identifier)
         self.reset_population(new_creatures)
 
     @staticmethod
-    def to_csv(creatures, base_folder = ".", identifier = "dna"):
+    def __to_csvs(creatures, base_folder = ".", identifier = "dna"):
         if not os.path.exists(base_folder):
             os.makedirs(base_folder, exist_ok=True)
         for i, cr in enumerate(creatures):
             np.savetxt(f"{base_folder}/{identifier}_cr_{i}.csv", cr.dna, delimiter = ",")
 
     @staticmethod
-    def from_csv(base_folder = ".", identifier = "dna"):
+    def __from_csvs(base_folder = ".", identifier = "dna"):
         assert os.path.exists(base_folder)
         files = [f for f in os.listdir(base_folder) if re.match(f"^({identifier}).*\\.csv$", f)]
         files.sort()
