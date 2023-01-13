@@ -94,6 +94,16 @@ class Population:
         new_creatures = Population.__from_csvs(base_folder = base_folder, identifier = identifier)
         self.reset_population(new_creatures)
 
+    def get_fittest_creatures(self, n_fittest = 3):
+        fits = manipulation.Selection.eval_fitness(self.creatures)
+        fittest_ids = fits.argsort()[-n_fittest:][::-1] # find n argmax
+        fittest_crs = [self.creatures[id] for id in fittest_ids]
+        return fittest_crs
+
+    def fittest_to_csvs(self, n_fittest = 3, base_folder = ".", identifier = "dna"):
+        fittest_crs = self.get_fittest_creatures(n_fittest)
+        Population.__to_csvs(fittest_crs, base_folder = base_folder, identifier = identifier)
+
     @staticmethod
     def __to_csvs(creatures, base_folder = ".", identifier = "dna"):
         if not os.path.exists(base_folder):
@@ -115,4 +125,28 @@ class Population:
             new_creatures.append(cr)
         return new_creatures
 
-    
+    def generate_pop_report(self, generation, base_folder = "."):
+        n_exp_link  = [len(cr.get_expanded_links()) for cr in self.creatures]
+        n_flat_link = [len(cr.get_flat_links()) for cr in self.creatures]
+        dists = [cr.get_distance() for cr in self.creatures]
+        fits  = list(manipulation.Selection.eval_fitness(self.creatures))
+
+        file_names = [
+            f"{generation}_n_exp_links.csv",
+            f"{generation}_n_flat_links.csv",
+            f"{generation}_distances.csv",
+            f"{generation}_fitness.csv",
+        ]
+
+        Population.__generate_report_csv(file_names[0], n_exp_link, base_folder)
+        Population.__generate_report_csv(file_names[1], n_flat_link, base_folder)
+        Population.__generate_report_csv(file_names[2], dists, base_folder)
+        Population.__generate_report_csv(file_names[3], fits, base_folder)
+
+    @staticmethod
+    def __generate_report_csv(csv_file_name, csv_rows, base_folder = "."):
+        assert type(csv_rows) == list
+        if not os.path.exists(base_folder):
+            os.makedirs(base_folder, exist_ok=True)
+        with open(os.path.join(base_folder, csv_file_name), "w") as f:
+            f.write(','.join(map(str, csv_rows)) + "\n")

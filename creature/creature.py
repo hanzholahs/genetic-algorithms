@@ -120,20 +120,6 @@ class Creature:
                 exp_links.extend(c_copy)
         return exp_links
 
-    # @staticmethod
-    # def __expand_links_recursive(parent, child_links):
-    #     p_copy = copy.copy(parent)
-    #     p_copy.name += ("_" + str(Creature.__counter))
-    #     Creature.__counter += 1
-    #     exp_links = [p_copy]
-    #     if len(child_links) > 0:
-    #         for i in range(child_links[0].recur):
-    #             child = Creature.__expand_links_recursive(child_links[0], child_links[1:])
-    #             c_copy = copy.copy(child)
-    #             c_copy[0].parent_name = p_copy.name
-    #             exp_links.extend(c_copy)
-    #     return exp_links
-
     @staticmethod
     def link_to_xml(name, parent_name, gene_dict, adom, sib_ind = None):
         link_shape = Creature.__link_shapes[ gene_dict["link_shape"] ]
@@ -250,7 +236,7 @@ class Creature:
             if i != 0:
                 robot_tag.appendChild(joint_tag)
 
-        return robot_tag        
+        return robot_tag  
         
 
 

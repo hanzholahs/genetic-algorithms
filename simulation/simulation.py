@@ -8,10 +8,10 @@ class Simulation:
         self.sim_id = sim_id
 
     def run_creature(self, cr, filename = "robot.urdf", max_frame = 2400):
-        if not os.path.exists(".temp/"):
-            os.makedirs(".temp")
+        if not os.path.exists(".temp/urdf"):
+            os.makedirs(".temp/urdf")
 
-        cr_xml_path = ".temp/sim_" + str(self.sim_id) + "_" + filename
+        cr_xml_path = ".temp/urdf/sim_" + str(self.sim_id) + "_" + filename
         cr.write_robot_xml(cr_xml_path)
 
         client_id = self.client_id
@@ -46,7 +46,7 @@ class Simulation:
                 last_position = (0, 0, 0)
                 break
             finally:
-                if last_position[2] > 10:
+                if last_position[2] > 100:
                     last_position = (0, 0, 0)
                     break
 

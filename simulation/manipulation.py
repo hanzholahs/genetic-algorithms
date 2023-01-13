@@ -17,7 +17,7 @@ class Selection:
             fit = np.maximum(0, dist * reward_x / penalty_n)  
             fit = np.nan_to_num(fit, nan = 0)
             fitness.append(fit)
-        return fitness
+        return np.array(fitness)
 
     @staticmethod
     def select_parent_indices(fits):
@@ -29,7 +29,7 @@ class Selection:
 
     @staticmethod
     def select_parents(creatures, fits = None):
-        if fits == None:
+        if fits is None:
             fits = Selection.eval_fitness(creatures)
         id1, id2 = Selection.select_parent_indices(fits)
         return creatures[id1], creatures[id2]
