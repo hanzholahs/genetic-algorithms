@@ -6,22 +6,22 @@ from simulation.log import write_log_file
 
 # Generation parameters
 len_gene_init = 5
-num_of_creatures = 100
-num_of_elites = 5
+num_of_creatures = 150
+num_of_elites = 20
 num_of_random = 5
 min_len = 2
-max_len = 15
+max_len = 7
 max_growth = 1.2
-mut_amt = .1
-mut_rate = .1
+mut_amt  = .1
+mut_rate = .2
 
 # Simulation parameters
-num_of_processes = 10
+num_of_processes = 20
 max_sim_frames = 2400
 iter_count = 0
-iter_stop  = 50
+iter_stop  = 500
 
-simulation_id = "sim"
+simulation_id = "sim-final"
 dir_path = os.path.dirname(os.path.realpath(__file__))
 cr_dna_path = os.path.join(dir_path, f"data/{simulation_id}/dna")
 cr_fit_path = os.path.join(dir_path, f"data/{simulation_id}/fittest_dna")
@@ -34,7 +34,7 @@ sim = simulation.MultiProcessSim(num_of_processes)
 
 if os.path.exists(cr_dna_path) and len(os.listdir(cr_dna_path)) > 0:
     gen_dirs  = [os.path.join(cr_dna_path, d) for d in os.listdir(cr_dna_path)]
-    latest_gen_dir = max(gen_dirs, key=os.path.getmtime)
+    latest_gen_dir = max(gen_dirs, key=os.path.getmtime) # latest modified, based on crlf, 2020, https://stackoverflow.com/a/60113327
     last_iter = int(re.findall('[0-9]+$', latest_gen_dir)[0])
     iter_count += last_iter
     iter_stop += last_iter
@@ -66,10 +66,10 @@ for i in range(iter_count+1, iter_stop+1):
 
     time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
     simlog_lines.append(f"{time} Iteration: {i}")
-    pop.fittest_to_csvs(num_of_elites, f"{cr_fit_path}/{simulation_id}_iter_{i}", simulation_id)
 
     if (i) % 10 == 0:
         pop.pop_to_csvs(f"{cr_dna_path}/{simulation_id}_iter_{i}", simulation_id)
+        pop.fittest_to_csvs(num_of_elites, f"{cr_fit_path}/{simulation_id}_iter_{i}", simulation_id)
         print(simlog_lines[i - iter_count])
 
 write_log_file(
