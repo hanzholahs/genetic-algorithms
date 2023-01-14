@@ -58,7 +58,7 @@ class Population:
             num_new_random = np.maximum(0, self.population_size - num_elites)
         
         fits = manipulation.Selection.eval_fitness(self.creatures)
-        fittest_indices = np.array(fits).argsort()[-1:-(num_elites+1):-1]
+        fittest_indices = np.array(fits).argsort()[-1:-(num_elites+1):-1] # find n argmax, based on NPE, 2011, https://stackoverflow.com/a/6910672
 
         new_creatures = []
         for index in fittest_indices:
@@ -96,7 +96,7 @@ class Population:
 
     def get_fittest_creatures(self, n_fittest = 3):
         fits = manipulation.Selection.eval_fitness(self.creatures)
-        fittest_ids = fits.argsort()[-n_fittest:][::-1] # find n argmax
+        fittest_ids = fits.argsort()[-n_fittest:][::-1] # find n argmax, based on NPE, 2011, https://stackoverflow.com/a/6910672
         fittest_crs = [self.creatures[id] for id in fittest_ids]
         return fittest_crs
 
