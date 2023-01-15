@@ -1,0 +1,41 @@
+<robot name="robot">
+	<link name="Link_0_0_0">
+		<visual>
+			<geometry>
+				<box size="0.0001 0.14106528996172166 0.0001"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.0001 0.14106528996172166 0.0001"/>
+			</geometry>
+		</collision>
+		<inertial>
+			<mass value="7.053264498086084e-13"/>
+			<inertia ixx="0.03" ixy="0.03" ixz="0.03" iyy="0" iyz="0" izz="0"/>
+		</inertial>
+	</link>
+	<link name="Link_1_0_1">
+		<visual>
+			<geometry>
+				<box size="0.11076624327432259 0.20862377972075996 0.03831518403487978"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.11076624327432259 0.20862377972075996 0.03831518403487978"/>
+			</geometry>
+		</collision>
+		<inertial>
+			<mass value="0.00015265753425469978"/>
+			<inertia ixx="0.03" ixy="0.03" ixz="0.03" iyy="0" iyz="0" izz="0"/>
+		</inertial>
+	</link>
+	<joint name="joint_Link_1_0_1" type="revolute">
+		<parent link="Link_0_0_0"/>
+		<child link="Link_1_0_1"/>
+		<axis xyz="0 1 0"/>
+		<origin xyz="0.0 0.36193739844582107 0.6567159514675878" rpy="1.0451938124864117 0.0006283185307179586 6.276902121872407"/>
+		<limit effort="1" upper="-3.141592653589793" lower="3.141592653589793" velocity="1"/>
+	</joint>
+</robot>

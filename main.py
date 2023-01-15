@@ -1,23 +1,43 @@
-import os
-from simulation import population, simulation
+import time
+import pybullet as p
+import numpy as np
+from creature import creature
 
-num_of_generations = 5
-max_sim_frame = 2400
-base_folder = "data"
-identifier  = "dna"
+dna = np.genfromtxt("./fittest_dna.csv", delimiter = ",")
+cr = creature.Creature(1)
+cr.update_dna(dna)
 
-pop = population.Population(10, 5)
-sim = simulation.MultiProcessSim(10)
+xml_str = cr.get_robot_xml().toprettyxml()
+motors  = cr.get_motors()
 
-# if os.path.exists(base_folder) and len(os.listdir(base_folder)) > 0:
-#     gen_dirs  = [d for d in os.listdir(base_folder) if os.path.isdir(d)]
-#     latest_gen_dir = max(gen_dirs, key=os.path.getmtime)
-#     pop.pop_from_csv(os.path.join(base_folder, latest_gen_dir), identifier)
-# else:
-#     os.makedirs(base_folder, exist_ok = True)
+with open('./fittest.urdf', 'w') as f:
+    f.write(xml_str)
 
-for ind_gen in range(1, num_of_generations + 1):
-    print(f"Iteration: {ind_gen}")
-    sim.eval_population(pop, max_sim_frame)
-    pop.reset_population_new_gen(num_elites = 5, num_new_random = 5)
-    pop.pop_to_csv(f"{base_folder}/iteration_{ind_gen}", "test_dna")
+p.connect(p.GUI)
+
+# configuration of the engine:
+p.setRealTimeSimulation(1)
+p.setGravity(0, 0, -10)
+p.setPhysicsEngineParameter(enableFileCaching=0)
+p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
+
+plane_shape = p.createCollisionShape(p.GEOM_PLANE)
+floor = p.createMultiBody(plane_shape, plane_shape)
+
+rob1 = p.loadURDF('./fittest.urdf')
+step = 0
+assert len(motors) == p.getNumJoints(rob1), "bad motors!"
+
+while True:
+    step += 1
+    if step % 120 == 0:
+        for jid, motor in enumerate(motors):
+            vel = motor()
+            p.setJointMotorControl2(
+                rob1, 
+                jid, 
+                controlMode=p.VELOCITY_CONTROL, 
+                targetVelocity=vel)
+
+    p.stepSimulation()
+    time.sleep(1./240.)
