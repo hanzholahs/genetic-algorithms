@@ -10,16 +10,16 @@ num_of_creatures = 150
 num_of_elites = 20
 num_of_random = 5
 min_len = 2
-max_len = 7
+max_len = 5
 max_growth = 1.2
-mut_amt  = .1
+mut_amt  = .25
 mut_rate = .2
 
 # Simulation parameters
 num_of_processes = 20
 max_sim_frames = 2400
 iter_count = 0
-iter_stop  = 500
+iter_stop  = 1000
 
 simulation_id = "sim-final"
 dir_path = os.path.dirname(os.path.realpath(__file__))
