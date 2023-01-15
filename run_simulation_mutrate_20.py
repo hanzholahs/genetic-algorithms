@@ -19,7 +19,7 @@ mut_rate = .2
 num_of_processes = 10
 max_sim_frames = 2400
 iter_count = 0
-iter_stop  = 100
+iter_stop  = 200
 
 simulation_id = "sim-mutrate-20"
 dir_path = os.path.dirname(os.path.realpath(__file__))
