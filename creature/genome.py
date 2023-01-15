@@ -17,9 +17,9 @@ class Genome:
         for key in spec.keys():
             gene_val = gene[spec[key]["index"]] * spec[key]["scale"]
             if spec[key]["type"] == "discrete":
-                gene_val = int(np.ceil(gene_val))
+                gene_val = int(gene_val) + 1
             elif spec[key]["type"] == "categorical":
-                gene_val = int(np.ceil(gene_val) - 1)
+                gene_val = int(gene_val)
             gene_dict[key] = gene_val
 
         return gene_dict
